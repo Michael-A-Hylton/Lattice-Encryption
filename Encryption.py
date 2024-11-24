@@ -1,7 +1,7 @@
 import numpy as np
 import secrets
 
-def createPublicKey(size, max_value):
+def createPublicKey(size, max_value=256):
 
     return ([secrets.randbelow(max_value) for _ in range(size)])
 
@@ -20,16 +20,16 @@ def encryptBinaryData(binaryData, publicKey):
     cipherText = []
     for bit, num in zip(binaryData, publicKey):
         if bit:
-            cipherText.append(num % 256)  # Ensure the number is in the byte range (0-255)
+            cipherText.append(num)  # Ensure the number is in the byte range (0-255)
         else:
             cipherText.append(0)  # For bit = 0, append 0
     return cipherText
 
 def main():
     listSize = 1000
-    maxVal=10**6
+    maxVal=256
 
-    publicKey=createPublicKey(listSize,maxVal)
+    publicKey=createPublicKey(listSize, maxVal)
     print("Provide the filepath of file to encrypt: ")
     file2encrypt=input()
     #file2encrypt=file2encrypt[6:]

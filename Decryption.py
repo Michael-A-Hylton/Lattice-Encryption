@@ -5,12 +5,11 @@ def binary2file(binary, outputPath):
     with open(outputPath, "wb") as file:
         file.write(byteData)
 
-def decryptText(ciphertext, numbers_list, binary_length):
+def decryptText(ciphertext_chunk, numbers_list, binary_length):
     binary_data = []
-    for num in numbers_list:  # Process each number in the numbers_list
-        if ciphertext >= num:
+    for num, cipher in zip(numbers_list, ciphertext_chunk):  # Process each number in the numbers_list
+        if cipher == num:
             binary_data.append(1)
-            ciphertext -= num
         else:
             binary_data.append(0)
     return np.array(binary_data[:binary_length], dtype=np.uint8)
@@ -34,13 +33,13 @@ def main():
     with open(encryptedFile, "rb") as file:
         ciphertext = file.read()
 
-    ciphertexts = list(ciphertext)
+    ciphertexts =  np.array_split(list(ciphertext), -(-binary_length // list_size))
 
     # Decrypt each chunk
     decryptedChunks = []
-    for byte in ciphertexts:
-        chunk_length = min(list_size, binary_length)  # Each chunk uses the full list size
-        decryptedChunks.append(decryptText(byte, numbers_list, chunk_length))  # Pass byte as single value
+    for ciphertext_chunk in ciphertexts:
+        chunk_length = min(len(ciphertext_chunk),binary_length)  # Each chunk uses the full list size
+        decryptedChunks.append(decryptText(ciphertext_chunk, numbers_list, chunk_length))  # Pass byte as single value
         binary_length -= chunk_length
     # Reconstruct binary data from chunks
     decrypted_binary = np.concatenate(decryptedChunks)
