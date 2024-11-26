@@ -16,13 +16,14 @@ def run_encryption():
 
 def run_decryption():
     file_path = file_input_decrypt.get()
+    key_file_path = key_file_input.get()
     decrypted_name = decrypted_file_name.get()
     if not file_path or not decrypted_name:
         messagebox.showerror("Error", "Please select a file and provide a name for the decrypted file.")
         return
     try:
         # Run the decryption script
-        subprocess.run(["python", "decryption_program.py"], input=f"{file_path}\n{decrypted_name}\n", text=True)
+        subprocess.run(["python", "decryption_program.py"], input=f"{file_path}\n{key_file_path}\n{decrypted_name}\n", text=True)
         messagebox.showinfo("Success", "File decrypted successfully!")
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {e}")
@@ -49,10 +50,15 @@ file_input_decrypt = tk.Entry(root, width=50)
 file_input_decrypt.grid(row=3, column=0, padx=10, pady=5)
 tk.Button(root, text="Browse", command=lambda: select_file(file_input_decrypt)).grid(row=3, column=1, padx=10, pady=5)
 
-tk.Label(root, text="Decrypted File Name").grid(row=4, column=0, padx=10, pady=5, sticky="w")
+tk.Label(root, text="Select Decryption Key").grid(row=4, column=0, padx=10, pady=5, sticky="w")
+key_file_input = tk.Entry(root, width=50)
+key_file_input.grid(row=5, column=0, padx=10, pady=5)
+tk.Button(root, text="Browse", command=lambda: select_file(key_file_input)).grid(row=5, column=1, padx=10, pady=5)
+
+tk.Label(root, text="Decrypted File Name").grid(row=6, column=0, padx=10, pady=5, sticky="w")
 decrypted_file_name = tk.Entry(root, width=50)
-decrypted_file_name.grid(row=5, column=0, padx=10, pady=5)
-tk.Button(root, text="Decrypt", command=run_decryption).grid(row=5, column=2, padx=10, pady=5)
+decrypted_file_name.grid(row=7, column=0, padx=10, pady=5)
+tk.Button(root, text="Decrypt", command=run_decryption).grid(row=7, column=1, padx=10, pady=5)
 
 # Run the application
 root.mainloop()
