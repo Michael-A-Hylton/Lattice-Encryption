@@ -1,8 +1,9 @@
 import numpy as np
 import secrets
 import os
+import struct
 
-def createPublicKey(size, max_value=256):
+def createPublicKey(size, max_value=4294967):
     return [secrets.randbelow(max_value) for _ in range(size)]
 
 def selectRandomSubset(numbersList, subset_size):
@@ -29,7 +30,7 @@ def encryptBinaryData(binaryData, publicKeySubset):
 def main():
     listSize = 1000
     subsetSize = 500  # We are going to use a subset of 500
-    maxVal = 256
+    maxVal = 4294967
 
     publicKey = createPublicKey(listSize, maxVal)
     print("Provide the filepath of the file to encrypt: ")
@@ -51,7 +52,9 @@ def main():
 
     with open(newfile, "wb") as file:  # Open file in binary write mode
         for chunk in ciphertexts:
-            file.write(bytes(chunk))  # Write encrypted data as bytes
+            for num in chunk:
+                packed=struct.pack('>I',num)
+                file.write(packed)  # Write encrypted data as bytes
     print(f"Encrypted file saved as {newfile}")
 
     # Save the encryption key

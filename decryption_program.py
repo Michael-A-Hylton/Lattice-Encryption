@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import struct
 
 def binary2file(binary, outputPath, ogFileLength):
     byteData = np.packbits(binary)[:ogFileLength].tobytes()  # Convert binary to byte data
@@ -34,14 +35,20 @@ def main():
 
     # Load ciphertext
     with open(encryptedFile, "rb") as file:
-        ciphertext = list(file.read())  # Read encrypted file as byte data
+        ciphertext = file.read()  # Read encrypted file as byte data
 
-    # Split the ciphertext into chunks
-    ciphertexts = np.array_split(list(ciphertext), -(-binary_length // list_size))
+    ciphertext_integers = []
+    for i in range(0, len(ciphertext), 4):
+
+        num = struct.unpack('>I', ciphertext[i:i + 4])[0]
+        ciphertext_integers.append(num)
+
+
+    ciphertext_chunks = np.array_split(list(ciphertext_integers), -(-binary_length // list_size))
 
     # Decrypt each chunk
     decryptedChunks = []
-    for ciphertext_chunk in ciphertexts:
+    for ciphertext_chunk in ciphertext_chunks:
         decryptedChunks.append(decryptData(ciphertext_chunk, publicKeySubset[:len(ciphertext_chunk)]))
 
     # Reconstruct the binary data from the decrypted chunks
