@@ -37,6 +37,7 @@ def main():
     file2encrypt = input()  # Path of file to encrypt
     newfile = "encryptedFile.bin"  # Output encrypted file
     keyfile = "encryptionKey.txt"  # Output key file
+    publicKeyFile = "publicKey.txt"
 
     # Select a random subset of 500 numbers
     publicKeySubset, selected_indices = selectRandomSubset(publicKey, subsetSize)
@@ -64,6 +65,11 @@ def main():
         file.write(f"{subsetSize}\n")  # Store the subset size
         file.writelines(f"{num}\n" for num in publicKeySubset)
     print(f"Encryption key saved as {keyfile}")
+
+    #save the public key
+    with open(publicKeyFile, "w") as file:
+        file.writelines(f"{num}\n" for num in publicKey)
+    print(f"Public key saved as {publicKeyFile}")
 
 if __name__ == "__main__":
     main()
